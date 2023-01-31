@@ -1,0 +1,8 @@
+build/**/*
+Docs/
+Docs/**/*
+backup/
+backup/**/*
+execution/
+execution/**/*
+ToDo/

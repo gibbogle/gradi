@@ -1,0 +1,45 @@
+CC=g++
+LD=g++
+NVCC=nvc++
+
+SRC_DIR=./src
+SRC_DIR_GPU=./src_gpu
+INC_DIR=./include
+OBJ_DIR=./
+SRC_FILES = $(wildcard $(SRC_DIR)/*.cpp)
+SRC_FILES_GPU = $(wildcard $(SRC_DIR_GPU)/*.cpp)
+NV_FILES = $(wildcard $(SRC_DIR_GPU)/*.cu)
+OBJ_FILES = $(patsubst $(SRC_DIR)/%.cpp,$(OBJ_DIR)/%.o,$(SRC_FILES))
+OBJ_FILES_GPU = $(patsubst $(SRC_DIR_GPU)/%.cpp,$(OBJ_DIR)/%.o,$(SRC_FILES_GPU))
+OBJ_FILES_NV = $(patsubst $(SRC_DIR_GPU)/%.cu,$(OBJ_DIR)/%.o,$(NV_FILES))
+
+CFLAGS+=-Wwrite-strings -I$(INC_DIR) -O3 -std=c++17
+LFLAGS+=-lm -lstdc++ -lstdc++fs
+
+
+maingpu.exe: CFLAGS+=-DUSE_GPU=1
+maingpu.exe: LFLAGS+=-lcudart -lcublas -lcuda -cuda
+maingpu.exe: LD=nvc++
+
+
+maingpu.exe: $(OBJ_FILES) $(OBJ_FILES_NV) $(OBJ_FILES_GPU)
+	$(NVCC) $(LFLAGS) -o $@ $^
+
+main.exe: $(OBJ_FILES)
+	$(LD) $(LFLAGS) -o $@ $^ 
+
+
+$(OBJ_DIR)/%.o: $(SRC_DIR)/%.cpp
+	$(CC) $(CFLAGS) -c -o $@ $<
+
+$(OBJ_DIR)/%.o: $(SRC_DIR_GPU)/%.cpp
+	$(NVCC) $(CFLAGS) -c -o $@ $<
+
+$(OBJ_DIR)/%.o: $(SRC_DIR_GPU)/%.cu
+	$(NVCC) $(CFLAGS) -c -o $@ $<
+
+
+clean: 
+	rm -f *.o main.exe maingpu.exe
+
+
