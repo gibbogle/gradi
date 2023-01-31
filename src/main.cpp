@@ -4,6 +4,7 @@ Time-dependent Greens function method, June 9, 2012. Updated August 2017.
 See greensTD.cpp for description of changes.
 Cuda 10.1 version, September 2019
 ***********************************************************************/
+// comment to commit
 #define _CRT_SECURE_NO_DEPRECATE
 
 #include <stdio.h>
