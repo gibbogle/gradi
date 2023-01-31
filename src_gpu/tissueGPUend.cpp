@@ -38,3 +38,4 @@ void tissueGPUend(int nntGPU, int nnvGPU)
 	cudaFree(d_tissxyz);
 	cudaFree(d_vessxyz);
 }
+
