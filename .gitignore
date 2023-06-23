@@ -1,6 +1,4 @@
 build/**/*
-Docs/
-Docs/**/*
 backup/
 backup/**/*
 execution/
