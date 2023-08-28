@@ -13,13 +13,20 @@ Note: mptiss is used in GreensTD for non-permeable solutes
 ****************************************************************************
 Warning: Rebuild solution after changing this file otherwise it does not update
 ****************************************************************************/
-	for(isp=1; isp<=nsp; isp++){	//solute with first-order decay
+float m0, pcr, po2;
+	for(isp=1; isp<=nsp; isp++){
+		mtiss[isp] = 0.;
+		mptiss[isp] = 0.;
 		if(isp == 1){
-			mtiss[isp] = tissparam[1][1]*c[2] - tissparam[2][1]*c[1];
-			mptiss[isp] = -tissparam[2][1];
+		//isp = 1: oxygen
+			m0 = tissparam[1][1];
+			pcr = tissparam[2][1];
+			po2 = FMAX(c[1],0.) / alphat[1];		//get rid of negative values
+			mtiss[1] = -m0*po2/(po2 + pcr);
+			if(po2 > 0.) mptiss[1] = -m0*pcr/SQR(po2 + pcr);
 		}
-		else if(isp == 2){			//solute produced by solute 1, with first order decay 
-			mtiss[isp] = tissparam[1][2]*c[1] - tissparam[2][2]*c[2];
+		else if(isp == 2){			//with first order decay 
+			mtiss[isp] = -tissparam[2][2]*c[2];
 			mptiss[isp] = -tissparam[2][2];
 		}
 		else printf("*** Error: Solute not found in tissrate.cpp.dat\n");

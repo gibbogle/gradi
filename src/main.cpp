@@ -85,10 +85,47 @@ float *d_qt,*d_qtp,*d_ct,*d_ctprev,*d_qv,*d_pv;
 float *h_gtt,*d_gtt,*h_gbartt,*d_gbartt;
 float *d_tissxyz,*d_vessxyz;
 
+// For drm_monolayer
+float dt_drm;
+int nt_drm;		// number of timesteps per drm timestep
+
+extern "C" void execute(int *, const char *, int *, const char *, int *, int *);
+extern "C" void set_greens(int);
+extern "C" void get_times(float*);
+extern "C" void simulate_step(int *);
+extern "C" void cell_step(int, const double*);
+extern "C" void write_binary(float*, int);
+
 int main(int argc, char *argv[])
 {
 	int iseg,inod,irun,nrun,n_step,n_diff,n_perm;
+	double conc[3];
 	FILE *ifp;
+	// For drm_monolayer
+	int ncpu, res, inlen, outlen, Ngreen, Nsteps, i, kcell;
+	float test_array[100];
+	char infile[] = "test.inp";
+	char outfile[] = "test.out";
+	inlen = strlen(infile);
+	outlen = strlen(outfile);
+
+	for (i = 0; i < 100; i++) test_array[i] = i;
+	write_binary(test_array, 100);
+	return 1;
+
+	//for (i = 0; i <= Nsteps; i++) {
+	//	for (kcell = 0; kcell < 4; kcell++) {
+	//		conc[0] = 0.18;
+	//		conc[1] = 1.0;
+	//		conc[2] = (kcell + 1) * 0.01;
+	//		cell_step(kcell, conc);
+	//	}
+	//	simulate_step(&res);
+	//}
+
+	//printf("res: %d\n", res);
+
+	//return 1;
 
 #if defined(__unix__) //Create a Current subdirectory if it does not already exist.
 	if (!fs::exists("Current")) fs::create_directory("Current");
@@ -110,6 +147,17 @@ int main(int argc, char *argv[])
 		printf("GB: irun: %d\n",irun);
 		input(irun,n_step,n_diff,n_perm);
 		printf("GB: ntpts: %d\n",ntpts);
+//		nnt = mxx * myy * mzz;
+		Ngreen = mxx * myy * mzz;
+		printf("mxx,myy,mzz,nnt: %d %d %d %d\n", mxx, myy, mzz, nnt);
+//		return 1;
+
+		Nsteps = 20;
+		ncpu = 1;
+		set_greens(Ngreen);
+		execute(&ncpu, infile, &inlen, outfile, &outlen, &res);
+		get_times(&dt_drm);
+		nt_drm = int(dt_drm / intervaldt[1]);
 
 		if(ntpts > 0){	//if no time points in TimeDep.dat, skip that case
 			if(irun == 0){	//no need to set up arrays every time

@@ -51,6 +51,9 @@ void tissueGPU2c();
 void tissueGPU3c();
 void tissueGPUcopy();
 
+extern "C" void simulate_step(int*);
+extern "C" void cell_step(int, const double*);
+
 void greensTD(int irun)
 {
 	extern int nmax,ntpts,ninterval;
@@ -93,6 +96,12 @@ void greensTD(int irun)
 	float qtqvsum,sumt,sumtprev,sumv,flowsumin,flowsumout,concin,concout;
 	float gbarttratesum,g0fac,ctsum,ctprevsum;	//added October 2016 for non-permeable solutes
 	double bicgstaberr = 1.e-12; //parameter for biconjugate gradient method
+
+	// drm stuff
+	extern float dt_drm;
+	extern int nt_drm;
+	double conc[3];
+	int kcell, res;
 
 	FILE *ofp,*ofp1,*ofp2,*ofp3;
 	clock_t tstart,tfinish,tstart1,tfinish1;
@@ -230,6 +239,7 @@ void greensTD(int irun)
 		if((iinterval == 1 && isubint == 1) || fabs(intervaldt[iinterval] - deltat) > 0.001*deltat){	//reset deltat, recompute coefficients
 			tstart1 = clock();
 			deltat = intervaldt[iinterval];
+			nt_drm = int(dt_drm / deltat);
 			diffusionmatrix();
 			convectmatrix();
 			tfinish1 = clock();
@@ -239,6 +249,19 @@ void greensTD(int irun)
 			if(useGPU) tissueGPUcopy();	//this has to be done after gtt and gttbar are set up
 #endif
 		}
+		if (itime%nt_drm == 0)	{	// update drm
+			for (kcell = 1; kcell <= nnt; kcell++) {
+//				conc[0] = 0.18;
+//				conc[1] = 1.0;
+//				conc[2] = (kcell + 1) * 0.01;
+				conc[0] = ct[kcell][1];
+				conc[1] = ct[kcell][2];
+				conc[2] = 0;
+				cell_step(kcell, conc);
+			}
+			simulate_step(&res);
+		}
+
 		itime++;
 		time += deltat;
 		if(fabs(time - tpts[itime]) > 1.e-6) printf("*** Error in time points list\n");

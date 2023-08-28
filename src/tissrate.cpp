@@ -10,6 +10,7 @@ void tissrate(int nsp, float *c, float *mtiss, float *mptiss)
 {	
 	extern int *oxygen;
 	extern float **tissparam;
+	extern float* alphat;	// GB added
 
 	int isp;
 
