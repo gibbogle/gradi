@@ -39,8 +39,11 @@ void contour(int itime, float time, int method)
 	//Method 2 requires computation of gvarvc, gtc and gbartc in diffusionmatrix.cpp.
 
 //create file name - need 3-digit frame number
+#if defined(__unix__) // use /for Linux
+	sprintf(fname, "Current//Contour%03i.ps", itime);
+#elif defined(_WIN32)
     sprintf(fname,"Current\\Contour%03i.ps",itime);
-
+#endif
 	printf("Generating data for contour plots...");
 
 	xmin = 0.;
