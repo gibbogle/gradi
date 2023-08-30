@@ -117,11 +117,13 @@ int main(int argc, char *argv[])
 #else
 	printf("USE_GPU is not defined\n");
 #endif
-	for (i = 0; i < 100; i++) test_array[i] = i;
-	write_binary(test_array, 100);
-	return 1;
+	//for (i = 0; i < 100; i++) test_array[i] = i;
+	//write_binary(test_array, 100);
+	//return 1;
 
+	//Nsteps = 100;
 	//for (i = 0; i <= Nsteps; i++) {
+	//	printf("i: %d\n", i);
 	//	for (kcell = 0; kcell < 4; kcell++) {
 	//		conc[0] = 0.18;
 	//		conc[1] = 1.0;
