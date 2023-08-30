@@ -3,6 +3,8 @@ Main program to call greensTD
 Time-dependent Greens function method, June 9, 2012. Updated August 2017.
 See greensTD.cpp for description of changes.
 Cuda 10.1 version, September 2019
+
+Note: To build the GPU version, need to add USE_GPU to the Preprocessor definitions list
 ***********************************************************************/
 // comment to commit
 #define _CRT_SECURE_NO_DEPRECATE
@@ -108,7 +110,13 @@ int main(int argc, char *argv[])
 	char outfile[] = "test.out";
 	inlen = strlen(infile);
 	outlen = strlen(outfile);
-
+	
+	printf("main\n");
+#ifdef USE_GPU
+	printf("USE_GPU is defined\n");
+#else
+	printf("USE_GPU is not defined\n");
+#endif
 	for (i = 0; i < 100; i++) test_array[i] = i;
 	write_binary(test_array, 100);
 	return 1;
