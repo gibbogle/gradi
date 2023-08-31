@@ -186,6 +186,7 @@ int main(int argc, char *argv[])
 					nnvGPU = nnv + 1;	//linear system dimension is nnv + 1
 					bicgstabBLASDinit(nnvGPU);
 					tissueGPUinit(nntGPU, nnvGPU);
+					printf("did bicgstabBLASDinit: %d\n", nnvGPU);
 				}
 #endif
 			}
@@ -208,7 +209,8 @@ int main(int argc, char *argv[])
 				if(useGPU){
 					tissueGPUend(nntGPU, nnvGPU);
 					bicgstabBLASDend(nnvGPU);
-				}
+					printf("did bicgstabBLASDend: %d\n", nnvGPU);
+			}
 #endif
 			}
 		}
