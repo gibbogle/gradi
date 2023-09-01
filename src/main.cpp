@@ -121,7 +121,7 @@ int main(int argc, char *argv[])
 	system("nvidia-smi > nvidia.out");
 	fpnvidia = fopen("nvidia.out","r");
 	for (i=0; i<100; i++) {
-	  fgets(buffer, 80, fpnvidia);
+	  ret = fgets(buffer, 80, fpnvidia);
 	  if (ret == NULL) break;
 	  printf("buffer: %s\n", buffer);
 	  ret = strstr(buffer, "failed");
