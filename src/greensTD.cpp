@@ -90,7 +90,6 @@ void greensTD(int irun)
 	int isn,itime,kmain,itp,jtp,convflag;
 	int greensverbose = 1;	//set to 0 for terse output, 1 for verbose
 	int bicgstabit = 2000; //parameter for biconjugate gradient method.  March 2010
-	int ierr;	// GB
 
 	float duration,time,pathlength,meanflow,rcbar,lambda1,den;
 	float dif,err,matfac,rhs2,perm,cvmin,cvmax;
@@ -350,9 +349,8 @@ void greensTD(int irun)
 				if (rhs2 > 1.e-12) {	//if RHS is not zero, solve linear system: sum mat[i][j]*qv[j] = rhs[i]
 #ifdef USE_GPU
 					if (useGPU) {
-						ierr = bicgstabBLASD(mat, rhs, matx, nnv + 1, bicgstaberr, bicgstabit);
-						printf("bicgstabBLASD: %d\n", ierr);
-						if (ierr != 0) exit(ierr);
+						bicgstabBLASD(mat, rhs, matx, nnv + 1, bicgstaberr, bicgstabit);
+						printf("bicgstabBLASD\n");
 					}
 					else 
 #endif
