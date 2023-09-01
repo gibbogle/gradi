@@ -96,6 +96,7 @@ void greensTD(int irun)
 	float qtqvsum,sumt,sumtprev,sumv,flowsumin,flowsumout,concin,concout;
 	float gbarttratesum,g0fac,ctsum,ctprevsum;	//added October 2016 for non-permeable solutes
 	double bicgstaberr = 1.e-12; //parameter for biconjugate gradient method
+	double bicgret;
 
 	// drm stuff
 	extern float dt_drm;
@@ -349,8 +350,8 @@ void greensTD(int irun)
 				if (rhs2 > 1.e-12) {	//if RHS is not zero, solve linear system: sum mat[i][j]*qv[j] = rhs[i]
 #ifdef USE_GPU
 					if (useGPU) {
-						bicgstabBLASD(mat, rhs, matx, nnv + 1, bicgstaberr, bicgstabit);
-						printf("bicgstabBLASD\n");
+						bicgret = bicgstabBLASD(mat, rhs, matx, nnv + 1, bicgstaberr, bicgstabit);
+						printf("bicgstabBLASD: %f\n",bicgret);
 					}
 					else 
 #endif
