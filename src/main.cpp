@@ -103,6 +103,10 @@ int main(int argc, char *argv[])
 	int iseg,inod,irun,nrun,n_step,n_diff,n_perm;
 	double conc[3];
 	FILE *ifp;
+ // checking GPU present
+  char buffer[80];
+  char* ret;
+  FILE* fpnvidia;
 	// For drm_monolayer
 	int ncpu, res, inlen, outlen, Ngreen, Nsteps, i, kcell;
 	float test_array[100];
@@ -114,6 +118,14 @@ int main(int argc, char *argv[])
 	printf("main\n");
 #ifdef USE_GPU
 	printf("USE_GPU is defined\n");
+  system("nvidia-smi > nvidia.out");
+  fpnvidia = fopen("nvidia.out","r");
+  fgets(buffer, 80, fpnvidia);
+  ret = strstr(buffer, "failed");
+  if (ret != NULL) {
+    printf("Using GPU but no GPU is present\n");
+    exit(1);
+  }
 #else
 	printf("USE_GPU is not defined\n");
 #endif
