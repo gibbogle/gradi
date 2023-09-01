@@ -118,14 +118,18 @@ int main(int argc, char *argv[])
 	printf("main\n");
 #ifdef USE_GPU
 	printf("USE_GPU is defined\n");
-  system("nvidia-smi > nvidia.out");
-  fpnvidia = fopen("nvidia.out","r");
-  fgets(buffer, 80, fpnvidia);
-  ret = strstr(buffer, "failed");
-  if (ret != NULL) {
-    printf("Using GPU but no GPU is present\n");
-    exit(1);
-  }
+	system("nvidia-smi > nvidia.out");
+	fpnvidia = fopen("nvidia.out","r");
+	for (i=0; i<100; i++) {
+	  fgets(buffer, 80, fpnvidia);
+	  if (ret == NULL) break;
+	  printf("buffer: %s\n", buffer);
+	  ret = strstr(buffer, "failed");
+	  if (ret != NULL) {
+		printf("Using GPU but no GPU is present\n");
+		exit(1);
+	  }
+	}
 #else
 	printf("USE_GPU is not defined\n");
 #endif
