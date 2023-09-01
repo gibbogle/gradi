@@ -352,7 +352,7 @@ void greensTD(int irun)
 					if (useGPU) {
 						ierr = bicgstabBLASD(mat, rhs, matx, nnv + 1, bicgstaberr, bicgstabit);
 						printf("bicgstabBLASD: %d\n", ierr);
-						if (ierr != 0) return 1;
+						if (ierr != 0) exit(ierr);
 					}
 					else 
 #endif
