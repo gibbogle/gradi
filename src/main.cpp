@@ -1,5 +1,5 @@
 /************************************************************************
-Main program to call greensTD
+Main program to call greensTD  
 Time-dependent Greens function method, June 9, 2012. Updated August 2017.
 See greensTD.cpp for description of changes.
 Cuda 10.1 version, September 2019
